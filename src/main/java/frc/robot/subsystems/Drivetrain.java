@@ -49,8 +49,8 @@ public class Drivetrain extends Subsystem {
 
     differentialDrive = new DifferentialDrive(leftMotors, rightMotors);
 
-    leftTrajectory = Pathfinder.readFromCSV(new File("../util/Trajectory_left.csv"));
-    rightTrajectory = Pathfinder.readFromCSV(new File("../util/Trajectory_right.csv"));
+    leftTrajectory = Pathfinder.readFromCSV(new File("../CSV/Trajectory_left.csv"));
+    rightTrajectory = Pathfinder.readFromCSV(new File("../CSV/Trajectory_right.csv"));
 
     left = new EncoderFollower(leftTrajectory);
     right = new EncoderFollower(rightTrajectory);
