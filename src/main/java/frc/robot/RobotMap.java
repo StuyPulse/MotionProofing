@@ -8,14 +8,22 @@
 package frc.robot;
 
 public interface RobotMap {
-    int TEMP_PORT = -1;
+    public interface PORTS{
+        int TEMP_PORT = -1;
+    }
     
-    double KP = 0.8;
-    double KI = 1;
-    double KD = 1;
-    double MAX_VEL = 50;
-    double MAX_ACCEL = 0.2;
+    public interface MATH_CONSTANTS{
+        double MAX_VEL = 50;
+        double MAX_ACCEL = 0.2;
+    }
 
-    int ENCODER_TPR = 100;
-    double WHEEL_DIAMETER = 10.0;
+    public interface HARDWARE_DETAIL{
+        int ENCODER_TICKS_PER_REV = 100;
+        double WHEEL_DIAMETER = 10.0;
+    }
 }
+/*
+    Ask if encoder is quad, and ask for ticks per rate
+    Ask for max vel and max accel
+    Ask Kevin if it goes clockwise or countercl
+*/
