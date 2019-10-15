@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,14 +33,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    try {
-      drivetrain = new Drivetrain();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    drivetrain = new Drivetrain();
+    
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    SmartDashboard.putNumber("Kp", 0);
+    SmartDashboard.putNumber("Ki", 0);
+    SmartDashboard.putNumber("Kd", 0);
   }
 
   /**
