@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -29,38 +30,26 @@ public class DrivetrainFollowPathCommand extends Command {
   EncoderFollower left;
   EncoderFollower right;
 
+  Notifier notifier;
+
+  double period;
+
   public DrivetrainFollowPathCommand(String leftPathname, String rightPathname) {
     requires(Robot.drivetrain);
     this.leftPathname = leftPathname;
     this.rightPathname = rightPathname;
-  }
 
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
     try {
       leftTrajectory = Pathfinder.readFromCSV(new File(Filesystem.getDeployDirectory(), leftPathname));
       rightTrajectory = Pathfinder.readFromCSV(new File(Filesystem.getDeployDirectory(), rightPathname));
     } catch (IOException e) {
       e.printStackTrace();
     }
-    
-    left = new EncoderFollower(leftTrajectory);
-    right = new EncoderFollower(rightTrajectory);
 
-    double Kp = SmartDashboard.getNumber("Kp", 0.8);
-    double Ki = SmartDashboard.getNumber("Ki", 0.0);
-    double Kd = SmartDashboard.getNumber("Kd", 0.0);
-
-    left.configurePIDVA(Kp, Ki, Kd, 1/RobotMap.MATH_CONSTANTS.MAX_VEL, 1/RobotMap.MATH_CONSTANTS.MAX_ACCEL);
-    right.configurePIDVA(Kp, Ki, Kd, 1/RobotMap.MATH_CONSTANTS.MAX_VEL, 1/RobotMap.MATH_CONSTANTS.MAX_ACCEL);
-    left.configureEncoder(0, RobotMap.HARDWARE_DETAIL.ENCODER_TICKS_PER_REV, RobotMap.HARDWARE_DETAIL.WHEEL_DIAMETER);
-    right.configureEncoder(0, RobotMap.HARDWARE_DETAIL.ENCODER_TICKS_PER_REV, RobotMap.HARDWARE_DETAIL.WHEEL_DIAMETER);
+    period = left.getSegment().dt/1000;
   }
 
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
+  protected void follow() {
     double l = left.calculate(Robot.drivetrain.getLeftEncoderTicks());
     double r = right.calculate(Robot.drivetrain.getRightEncoderTicks());
     
@@ -76,6 +65,25 @@ public class DrivetrainFollowPathCommand extends Command {
     double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
     Robot.drivetrain.tankDrive(l + turn, r - turn);
+  }
+
+  // Called just before this Command runs the first time
+  @Override
+  protected void initialize() {
+    left = new EncoderFollower(leftTrajectory);
+    right = new EncoderFollower(rightTrajectory);
+
+    double Kp = SmartDashboard.getNumber("Kp", 0.8);
+    double Ki = SmartDashboard.getNumber("Ki", 0.0);
+    double Kd = SmartDashboard.getNumber("Kd", 0.0);
+
+    left.configurePIDVA(Kp, Ki, Kd, 1/RobotMap.MATH_CONSTANTS.MAX_VEL, 1/RobotMap.MATH_CONSTANTS.MAX_ACCEL);
+    right.configurePIDVA(Kp, Ki, Kd, 1/RobotMap.MATH_CONSTANTS.MAX_VEL, 1/RobotMap.MATH_CONSTANTS.MAX_ACCEL);
+    left.configureEncoder(0, RobotMap.HARDWARE_DETAIL.ENCODER_TICKS_PER_REV, RobotMap.HARDWARE_DETAIL.WHEEL_DIAMETER);
+    right.configureEncoder(0, RobotMap.HARDWARE_DETAIL.ENCODER_TICKS_PER_REV, RobotMap.HARDWARE_DETAIL.WHEEL_DIAMETER);
+  
+    notifier = new Notifier(() -> follow());
+    notifier.startPeriodic(period);
   }
 
   // Make this return true when this Command no longer needs to run execute()
