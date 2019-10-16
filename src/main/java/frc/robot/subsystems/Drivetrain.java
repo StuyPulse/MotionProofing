@@ -30,13 +30,13 @@ public class Drivetrain extends Subsystem {
   private DifferentialDrive differentialDrive;
 
   public Drivetrain() {
-    leftRearMotor = new WPI_TalonSRX(RobotMap.PORTS.TEMP_PORT);
-    leftFrontMotor = new WPI_TalonSRX(RobotMap.PORTS.TEMP_PORT);
-    rightRearMotor = new WPI_TalonSRX(RobotMap.PORTS.TEMP_PORT);
-    rightFrontMotor = new WPI_TalonSRX(RobotMap.PORTS.TEMP_PORT);
+    leftRearMotor = new WPI_TalonSRX(RobotMap.PORTS.REAR_LEFT_MOTOR_CHANNEL);
+    leftFrontMotor = new WPI_TalonSRX(RobotMap.PORTS.FRONT_LEFT_MOTOR_CHANNEL);
+    rightRearMotor = new WPI_TalonSRX(RobotMap.PORTS.REAR_RIGHT_MOTOR_CHANNEL);
+    rightFrontMotor = new WPI_TalonSRX(RobotMap.PORTS.FRONT_RIGHT_MOTOR_CHANNEL);
     
-    leftEncoder = new Encoder(RobotMap.PORTS.TEMP_PORT, RobotMap.PORTS.TEMP_PORT);
-    rightEncoder = new Encoder(RobotMap.PORTS.TEMP_PORT, RobotMap.PORTS.TEMP_PORT);
+    leftEncoder = new Encoder(RobotMap.PORTS.LEFT_ENCODER_CHANNEL_A, RobotMap.PORTS.LEFT_ENCODER_CHANNEL_B);
+    rightEncoder = new Encoder(RobotMap.PORTS.RIGHT_ENCODER_CHANNEL_A, RobotMap.PORTS.RIGHT_ENCODER_CHANNEL_B);
 
     gyro = new AHRS(I2C.Port.kMXP);
 
