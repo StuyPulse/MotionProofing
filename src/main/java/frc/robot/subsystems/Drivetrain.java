@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -20,8 +19,6 @@ import frc.robot.RobotMap;
 public class Drivetrain extends Subsystem {
 
   private WPI_TalonSRX leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor;
-
-  private Encoder leftEncoder, rightEncoder;
 
   private AHRS gyro;
 
@@ -34,9 +31,6 @@ public class Drivetrain extends Subsystem {
     leftFrontMotor = new WPI_TalonSRX(RobotMap.PORTS.FRONT_LEFT_MOTOR_CHANNEL);
     rightRearMotor = new WPI_TalonSRX(RobotMap.PORTS.REAR_RIGHT_MOTOR_CHANNEL);
     rightFrontMotor = new WPI_TalonSRX(RobotMap.PORTS.FRONT_RIGHT_MOTOR_CHANNEL);
-    
-    leftEncoder = new Encoder(RobotMap.PORTS.LEFT_ENCODER_CHANNEL_A, RobotMap.PORTS.LEFT_ENCODER_CHANNEL_B);
-    rightEncoder = new Encoder(RobotMap.PORTS.RIGHT_ENCODER_CHANNEL_A, RobotMap.PORTS.RIGHT_ENCODER_CHANNEL_B);
 
     gyro = new AHRS(I2C.Port.kMXP);
 
@@ -56,12 +50,25 @@ public class Drivetrain extends Subsystem {
     differentialDrive.tankDrive(leftSpeed, rightSpeed);
   }
 
-  public int getLeftEncoderTicks() {
-    return leftEncoder.get();
+  public int getLeftEncoderRaw() {
+    return leftFrontMotor.getSelectedSensorPosition();
   }
 
-  public int getRightEncoderTicks() {
-    return rightEncoder.get();
+  public double getLeftEncoderDistance() {
+    return getLeftEncoderRaw() * RobotMap.HARDWARE_DETAIL.WHEEL_CIRCUMFERENCE / RobotMap.HARDWARE_DETAIL.ENCODER_UNITS_PER_REV;
+  }
+
+  public int getRightEncoderRaw() {
+    return rightFrontMotor.getSelectedSensorPosition();
+  }
+
+  public double getRightEncoderDistance() {
+    return getRightEncoderRaw() * RobotMap.HARDWARE_DETAIL.WHEEL_CIRCUMFERENCE / RobotMap.HARDWARE_DETAIL.ENCODER_UNITS_PER_REV;
+  }
+
+  public void resetEncoders() {
+    rightFrontMotor.setSelectedSensorPosition(0);
+    leftFrontMotor.setSelectedSensorPosition(0);
   }
 
   public void stop(){

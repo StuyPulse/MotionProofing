@@ -18,7 +18,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.followers.EncoderFollower;
+import jaci.pathfinder.followers.DistanceFollower;
 
 public class DrivetrainFollowPathCommand extends Command {
   String leftPathname;
@@ -27,8 +27,8 @@ public class DrivetrainFollowPathCommand extends Command {
   Trajectory leftTrajectory;
   Trajectory rightTrajectory;
 
-  EncoderFollower left;
-  EncoderFollower right;
+  DistanceFollower left;
+  DistanceFollower right;
 
   Notifier notifier;
 
@@ -50,8 +50,8 @@ public class DrivetrainFollowPathCommand extends Command {
   }
 
   protected void follow() {
-    double l = left.calculate(Robot.drivetrain.getLeftEncoderTicks());
-    double r = right.calculate(Robot.drivetrain.getRightEncoderTicks());
+    double l = left.calculate(Robot.drivetrain.getLeftEncoderDistance());
+    double r = right.calculate(Robot.drivetrain.getRightEncoderDistance());
     
     double gyro_heading = Robot.drivetrain.getGyroAngle();
     double desired_heading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
@@ -70,8 +70,10 @@ public class DrivetrainFollowPathCommand extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    left = new EncoderFollower(leftTrajectory);
-    right = new EncoderFollower(rightTrajectory);
+    Robot.drivetrain.resetEncoders();
+
+    left = new DistanceFollower(leftTrajectory);
+    right = new DistanceFollower(rightTrajectory);
 
     double Kp = SmartDashboard.getNumber("Kp", 0.8);
     double Ki = SmartDashboard.getNumber("Ki", 0.0);
@@ -79,8 +81,6 @@ public class DrivetrainFollowPathCommand extends Command {
 
     left.configurePIDVA(Kp, Ki, Kd, 1/RobotMap.MATH_CONSTANTS.MAX_VEL, 1/RobotMap.MATH_CONSTANTS.MAX_ACCEL);
     right.configurePIDVA(Kp, Ki, Kd, 1/RobotMap.MATH_CONSTANTS.MAX_VEL, 1/RobotMap.MATH_CONSTANTS.MAX_ACCEL);
-    left.configureEncoder(0, RobotMap.HARDWARE_DETAIL.ENCODER_TICKS_PER_REV, RobotMap.HARDWARE_DETAIL.WHEEL_DIAMETER);
-    right.configureEncoder(0, RobotMap.HARDWARE_DETAIL.ENCODER_TICKS_PER_REV, RobotMap.HARDWARE_DETAIL.WHEEL_DIAMETER);
   
     notifier = new Notifier(() -> follow());
     notifier.startPeriodic(period);

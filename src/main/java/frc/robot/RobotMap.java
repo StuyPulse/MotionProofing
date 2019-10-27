@@ -26,12 +26,13 @@ public interface RobotMap {
     }
 
     public interface HARDWARE_DETAIL{
-        int ENCODER_TICKS_PER_REV = 256;
+        int ENCODER_UNITS_PER_REV = 4096;
 
         // In feet to match field maps
         double CHASSIS_WIDTH = 20.875/12;
         double WHEEL_TO_WHEEL_WIDTH = 25.5/12;
         double WHEEL_DIAMETER = 7.5;
+        double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     }
 }
 /*.
