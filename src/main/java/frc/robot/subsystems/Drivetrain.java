@@ -8,9 +8,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -20,7 +19,7 @@ public class Drivetrain extends Subsystem {
 
   private WPI_TalonSRX leftFrontMotor, leftRearMotor, rightFrontMotor, rightRearMotor;
 
-  private AHRS gyro;
+  private ADXRS450_Gyro gyro;
 
   private SpeedControllerGroup leftMotors, rightMotors;
 
@@ -32,7 +31,7 @@ public class Drivetrain extends Subsystem {
     rightRearMotor = new WPI_TalonSRX(RobotMap.PORTS.REAR_RIGHT_MOTOR_CHANNEL);
     rightFrontMotor = new WPI_TalonSRX(RobotMap.PORTS.FRONT_RIGHT_MOTOR_CHANNEL);
 
-    gyro = new AHRS(I2C.Port.kMXP);
+    gyro = new ADXRS450_Gyro();
 
     leftMotors = new SpeedControllerGroup(leftRearMotor, leftFrontMotor);
     rightMotors = new SpeedControllerGroup(rightRearMotor, rightFrontMotor);
