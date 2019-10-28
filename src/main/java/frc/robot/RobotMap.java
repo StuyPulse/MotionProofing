@@ -35,8 +35,4 @@ public interface RobotMap {
         double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     }
 }
-/*.
-    Ask if encoder is quad, and ask for ticks per rate
-    Test maxvel
-    Ask Kevin if it goes clockwise or countercl
-*/
+
