@@ -34,6 +34,9 @@ public class DrivetrainFollowPathCommand extends Command {
 
   double period;
 
+  double leftEncoderInitialDistance;
+  double rightEncoderInitialDistance;
+
   public DrivetrainFollowPathCommand(String leftPathname, String rightPathname) {
     requires(Robot.drivetrain);
     this.leftPathname = leftPathname;
@@ -50,8 +53,8 @@ public class DrivetrainFollowPathCommand extends Command {
   }
 
   protected void follow() {
-    double l = left.calculate(Robot.drivetrain.getLeftEncoderDistance());
-    double r = right.calculate(Robot.drivetrain.getRightEncoderDistance());
+    double l = left.calculate(Robot.drivetrain.getLeftEncoderDistance() - leftEncoderInitialDistance);
+    double r = right.calculate(Robot.drivetrain.getRightEncoderDistance() - rightEncoderInitialDistance);
     
     double gyro_heading = Robot.drivetrain.getGyroAngle();
     double desired_heading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
@@ -70,7 +73,8 @@ public class DrivetrainFollowPathCommand extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.drivetrain.resetEncoders();
+    leftEncoderInitialDistance = Robot.drivetrain.getLeftEncoderDistance();
+    rightEncoderInitialDistance = Robot.drivetrain.getRightEncoderDistance();
 
     left = new DistanceFollower(leftTrajectory);
     right = new DistanceFollower(rightTrajectory);

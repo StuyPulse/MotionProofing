@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    drivetrain.resetEncoders();
     m_autoSelected = m_chooser.getName();
     System.out.println("Auto selected: " + m_autoSelected);
 
